@@ -1,9 +1,12 @@
 # -*- mode: python -*-
 Import('env')
 
-env.Prepend(CCFLAGS = '-g -Wall -m32')
-env.Prepend(LINKFLAGS = '-m32')
+env.Prepend(CCFLAGS = '-g -Wall')
 env.Append(CPPPATH = Dir('../deps/v8/src'))
 env.Append(LIBS = File('../deps/v8/libv8_g.a'))
+
+if env['PLATFORM'] == 'darwin':
+    env.Prepend(CCFLAGS = '-m32')
+    env.Prepend(LINKFLAGS = '-m32')
 
 env.Program(target='noble', source=['noble.cc'])
