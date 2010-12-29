@@ -1,6 +1,14 @@
 Noble: the noble text editor
 ============================
 
+Building
+--------
+
+This works at the moment:
+
+    $ python tools/scons-local/scons.py mode=debug
+    # python tools/scons-local/scons.py src
+
 Goals
 -----
 
@@ -35,7 +43,12 @@ Decisions
 ---------
 
 * Simple, simple, simple.
+* Steal a lot from Node.js. (We want GUI, not Console.)
 * Design things a lot like Emacs and Vim designed things. (They got a lot of stuff right.)
 * Start with basic, generic implementations. Redesign later.
 * Write minimal kernel in C. Optimize later by porting JavaScript ot C.
 * Make packages integration easy to work with. Vim and Emacs are still hack-ish.
+
+Building
+--------
+
