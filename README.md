@@ -4,10 +4,13 @@ Noble: the noble text editor
 Building
 --------
 
-This works at the moment:
+This works at the moment -- first, build the v8 library:
 
     $ python tools/scons-local/scons.py mode=debug
-    # python tools/scons-local/scons.py src
+
+Then build the noble executable into `src/noble`:
+
+    $ python tools/scons-local/scons.py src
 
 Goals
 -----
