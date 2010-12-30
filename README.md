@@ -1,27 +1,16 @@
-Noble: the noble text editor
-============================
+# Noble: the noble text editor #
 
-Building
---------
-
-This works at the moment -- first, build the v8 library:
-
-    $ python tools/scons-local/scons.py mode=debug
-
-Then build the noble executable into `src/noble`:
-
-    $ python tools/scons-local/scons.py src
-
-Goals
------
+I want Noble to be the text editor of the future. I want:
 
 * The speed and flexibility of editing text like Vim
 * The external-process integration level of Emacs
-* The hot features and OS-level integration of TextMate
-* The expressibility, customizablity and hackability of being built mostly in a popular, modern language
+* The hot features and OS-level integration of TextMate (but for Linux
+  and Windows as well)
+* The customizability of writing a whole editor in a functional,
+  dynamic language (like Emacs and Elisp)
+* The fun and excitement of working with a "hot" language, JavaScript
 
-Objectives
-----------
+### Plan ###
 
 1. A basic UI in console
    * V8 + tiny kernel
@@ -32,6 +21,11 @@ Objectives
    * Syntax highlighting
    * Indenting
    * Buffers
+1. Get people interested
+   * Adopt GitHub
+   * Create a central package repo
+   * Create a snippets repo
+   * Create a feature comparison grid
 1. OS Integration
    * Things like drawers, toolbars, built-in help and Growl support on Mac OS X
    * GTK/Gnome support on Linux
@@ -42,16 +36,75 @@ Objectives
    * Snippets
    * Image and SVG support in buffers
 
-Decisions
----------
+## Building ##
+
+This works at the moment -- first, build the v8 library:
+
+    $ python tools/scons-local/scons.py mode=debug
+
+Then build the noble executable into `src/noble`:
+
+    $ python tools/scons-local/scons.py src
+
+## Hacking ##
+
+### Grand decisions ###
 
 * Simple, simple, simple.
-* Steal a lot from Node.js. (We want GUI, not Console.)
-* Design things a lot like Emacs and Vim designed things. (They got a lot of stuff right.)
+* Write as little code as possible. Write high-level things first and
+  then write the smaller functions needed for them to work.
+* Steal a lot from Node.js.
+* Design things a lot like Emacs and Vim designed things. (They got a
+  lot of stuff right.)
 * Start with basic, generic implementations. Redesign later.
-* Write minimal kernel in C. Optimize later by porting JavaScript ot C.
-* Make packages integration easy to work with. Vim and Emacs are still hack-ish.
+* Write minimal kernel in C. Optimize later by porting JavaScript to
+  C.
+* Make packages integration easy to work with. Vim and Emacs are still
+  hack-sh.
+* Plan for some kind of testing system.
 
-Building
---------
+### Layers of Noble ###
 
+Noble should have smart, well-planned out layers. Here's what they are
+in order from lowest-level (C) to highest-level (user interface):
+
+1. A small kernel with minimal functions written in C which are made
+   available to JavaScript, such as `eval`, `loadFile` and `reallyExit`.
+1. An event loop which fires events on keystrokes, system signals, and
+   a tick every 1 second.
+1. A basic display system (main area, status bar, command line/minibuffer)
+1. Buffer management
+1. Buffer-rendering system
+1. GUI adaptation
+
+### Places where serious help will be needed ###
+
+I have a good idea of what's _possible_ but I don't have the
+immediate knowledge of how to _do_ most of it.
+
+Here's a list of things where I can write an initial alpha-level
+implementation but will need a better long-term implementation
+(preferably written by an expert):
+
+* C++ (compiling, cross-platform support, and -- oh -- the language)
+* Build system (v8 uses Scons, I might as well try)
+* File IO
+* Efficient memory management
+* Language parsing
+* Event loops
+* OS integration on Linux, Mac OS X and maybe Windows
+
+## Credit ##
+
+* v8
+* Node
+* TODO: List all important links here
+
+### Contributors ###
+
+* Ian
+* Russell
+
+### Stuff ripped off from Node.js ##
+
+* TODO
