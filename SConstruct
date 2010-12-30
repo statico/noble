@@ -8,3 +8,5 @@ SConscript('deps/v8/SConstruct', exports=['env'])
 
 # Include the Noble SCons directives.
 SConscript('src/SConscript', exports=['env'])
+
+# TODO: Add build target to run cpplint.py
