@@ -29,12 +29,26 @@ I want Noble to be the text editor of the future. I want:
 1. OS Integration
    * Things like drawers, toolbars, built-in help and Growl support on Mac OS X
    * GTK/Gnome support on Linux
+   * Fullscreen
 1. Add "modern" text editor features
+   * Multilingual/RTL ease-of-use
    * IntelliSense
+   * Tab/buffer browser
    * Project browser
    * Quickly find functions, methods, files, whatever
    * Snippets
    * Image and SVG support in buffers
+   * Great built-in documentation
+   * Compatibility modes for Vim, Emacs and Vim (help them wean off)
+   * Great color schemes (steal the popular ones)
+   * Customization GUI
+   * Search and replaces
+   * VCS integration
+   * As much as possible from
+     [Code Bubbles](http://www.cs.brown.edu/people/acb/codebubbles_site.htm)
+   * Anything else to improve...
+     * LaTeX build/refresh cycle
+     * Django refresh cycle
 
 ## Building ##
 
@@ -91,8 +105,9 @@ implementation but will need a better long-term implementation
 * File IO
 * Efficient memory management
 * Language parsing
-* Event loops
+* The rendering layer
 * OS integration on Linux, Mac OS X and maybe Windows
+* Figuring out how to bundle the core runtime
 
 ## Credit ##
 
