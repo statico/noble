@@ -25,13 +25,10 @@ Handle<Value> Exit(const Arguments& args) {
 Handle<Value> DebugLog(const Arguments& args) {
   HandleScope scope;
 
-  OPEN_LOG;
   int len = args.Length();
   for (int i = 0; i < len; i++) {
-    X << NOBLE_CSTR(args[i]->ToString());
-    X << ((i == len - 1) ? "\n" : " ");
+    DLOG << NOBLE_CSTR(args[i]->ToString()) << ((i == len - 1) ? "\n" : " ");
   }
-  CLOSE_LOG;
 
   return Undefined();
 }

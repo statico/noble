@@ -14,7 +14,8 @@ I want Noble to be the text editor of the future. I want:
 ### Plan ###
 
 1. A basic UI in console
-   * V8 + tiny kernel (`binary`, `io`, `fs`, `system` and `console` modules specified by [CommonJS](http://wiki.commonjs.org/wiki/CommonJS)
+   * V8 + tiny kernel (`binary`, `io`, `fs`, `system` and `console`
+     modules specified by [CommonJS](http://wiki.commonjs.org/wiki/CommonJS)
    * Vim and Emacs emulation
    * Basic modes, selection, undo
 1. Ability to hack Noble with Noble (dogfood)
@@ -30,7 +31,8 @@ I want Noble to be the text editor of the future. I want:
    * Create a feature comparison grid
    * Python, Ruby, HTML and CSS support
 1. OS Integration
-   * Mac OS X: Things like drawers, toolbars, built-in help, and Growl support
+   * Mac OS X: Things like drawers, toolbars, built-in help, and Growl
+     support. See [Kod](http://www.kodapp.com)
    * Gnome: Similar support as OS X
    * Fullscreen (and a "minimalist" mode with wide margins)
 1. Add "modern" text editor features (kinda in order)
@@ -39,6 +41,7 @@ I want Noble to be the text editor of the future. I want:
    * Multilingual/RTL ease-of-use
    * IntelliSense
    * Great color schemes (steal the popular ones)
+   * Smart line wrapping (`M-q` in Emacs)
    * Quickly find functions, methods, files, whatever
    * Snippets
    * Image and SVG support in buffers
@@ -81,9 +84,14 @@ Then build the noble executable into `src/noble`:
   lot of stuff right.)
 * Start with basic, generic implementations. Redesign later.
 * Write minimal kernel in C. Optimize later by porting JavaScript to
-  C.
-* Make packages integration easy to work with. Vim and Emacs are still
-  hack-sh.
+  C. Or start with some great C libraries made available to JavaScript
+  -- whichever gets Noble off the ground faster.
+* Favor open, global namespaces instead of hiding properties. Meaning,
+  do things the Emacs way where everything is a global, not the Java
+  way with interfaces and data-
+   * _But won't this mean add-ons are very hack-ish?_ Hopefully not.
+     Let's build packages to address _stories_ -- e.g., "This package
+     enables fast buffer-switching."
 * Plan for some kind of testing system.
 
 ### Layers of Noble ###

@@ -42,6 +42,10 @@ int main(int argc, char** argv, char** envp) {
   }
   string filename(argv[1]);
 
+#ifdef DEBUG
+  INIT_DLOG()
+#endif
+
   HandleScope scope;
   TryCatch try_catch;
 
@@ -64,7 +68,7 @@ int main(int argc, char** argv, char** envp) {
   // Compile
   Handle<Script> script = Script::Compile(source, String::NewSymbol(filename.c_str()));
   if (script.IsEmpty()) {
-    term::PrintException("Couldn't compile init script", try_catch);
+    term::ReportException("Couldn't compile init script", try_catch);
     return 1;
   }
 
@@ -72,7 +76,7 @@ int main(int argc, char** argv, char** envp) {
   try_catch.Reset();
   script->Run();
   if (try_catch.HasCaught()) {
-    term::PrintException("Couldn't run init script", try_catch);
+    term::ReportException("Couldn't run init script", try_catch);
   }
 
   // Loop

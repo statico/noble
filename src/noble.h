@@ -4,6 +4,7 @@
 #define NOBLE_H_
 
 #ifdef DEBUG
+#include <ctime>
 #include <iostream>
 #include <fstream>
 #endif // DEBUG
@@ -29,6 +30,10 @@
 
 #define NOBLE_CSTR(value) (*(String::Utf8Value(value)))
 
+// Useful for debugging.
+#define NOBLE_TOSTRING(handle) \
+  (handle.IsEmpty() ? (char *) "(empty)" : NOBLE_CSTR(handle->ToString()))
+
 // Other handy macros stolen from Node.
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
 
@@ -40,9 +45,15 @@
   void operator=(const TypeName&)
 
 #ifdef DEBUG
-#define OPEN_LOG std::ofstream logger__("noble.log", std::fstream::app);
-#define X logger__
-#define CLOSE_LOG logger__.close();
+static std::ofstream logger__("noble.log", std::fstream::app);
+#define DLOG logger__
+#define INIT_DLOG() \
+  time_t t = time(0); \
+  struct tm* now = localtime(&t); \
+  DLOG << "--------------------------------------------------------" << std::endl; \
+  DLOG << "Starting log at " << (now->tm_year + 1900) << '-' << (now->tm_mon + 1) \
+       << '-' << now->tm_mday << ' ' << now->tm_hour << ':' << now->tm_min \
+       << ':' << now->tm_sec << std::endl;
 #endif // DEBUG
 
 #endif // NOBLE_H_

@@ -1,5 +1,6 @@
 // Copyright 2011 the Noble project authors. All rights reserved.
 
+#include <stdio.h>
 #include <string.h>
 
 #include <map>
@@ -194,20 +195,29 @@ void PrintLine(const string& message) {
   SLsmg_refresh();
 }
 
-void PrintException(const string& prefix, const TryCatch& try_catch) {
+void ReportException(const string& prefix, const TryCatch& try_catch) {
   HandleScope scope;
+
+  Handle<Message> message = try_catch.Message();
+  String::Utf8Value exception(try_catch.Exception());
   String::Utf8Value trace(try_catch.StackTrace());
-  if (trace.length() > 0) {
+
+  if (!message.IsEmpty()) {
+    String::Utf8Value filename(message->GetScriptResourceName());
+    String::Utf8Value sourceline(message->GetSourceLine());
+    char* linum = new char[10];
+    sprintf(linum, "%d", message->GetLineNumber());
+    PauseAndDisplayMessage(string(*filename) + ":" + string(linum) + ": " +
+                           string(*exception) + "\n" + string(*sourceline) + "\n");
+  } else if (trace.length() > 0) {
     PauseAndDisplayMessage(prefix + "\n\n" + string(*trace));
   } else {
     // this really only happens for RangeErrors, since they're the only
     // kind that won't have all this info in the trace.
     Local<Value> er = try_catch.Exception();
-    String::Utf8Value msg(!er->IsObject() ? er->ToString()
-                         : er->ToObject()->Get(String::New("message"))->ToString());
+    String::Utf8Value msg(er->ToString());
     PauseAndDisplayMessage(prefix + "\n\nError: " + string(*msg));
   }
-
 }
 
 void PauseAndDisplayMessage(const string& message) {
@@ -240,7 +250,7 @@ void MainLoop() {
       TryCatch try_catch;
       callback->Call(global, 1, argv);
       if (try_catch.HasCaught()) {
-        PrintException("Error calling onKeypress()", try_catch);
+        ReportException("Error calling onKeypress()", try_catch);
       }
 
       SLsmg_refresh();

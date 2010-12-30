@@ -35,22 +35,6 @@ var log = console.log = function console_log() {
   term.update();
 };
 
-term.clear();
-try {
-  term.setAttribute('blink');
-} catch(e) { log(e) }
-term.setColor('green', 'blue');
-log(" - I'm feeling noble! - ");
-term.setColor('default', 'default');
-log('args:', system.args);
-log('HOME =', system.env.HOME);
-log('eval:', eval('1 + 2'));
-log('term is', term.width(), 'x', term.height());
-log('narrow char - [¢] - wide char - [▣]');
-log('a黑z');
-
-var modules = {};
-
 function require(name) {
   // A naive implementation of http://wiki.commonjs.org/wiki/Modules/1.1
   var paths = (system.env.NOBLE_PATH || '.').split(/:/);
@@ -67,6 +51,47 @@ function require(name) {
     return eval(content);
   }
   throw new Error("Couldn't open " + name + " in " + paths);
+}
+
+var buffers = [], currentBuffer; // TODO: support windows
+
+function redrawDisplay() {
+  if (buffers.length < 1) {
+    buffers.push({name: 'scratch', content: '你好! Welcome to Noble!'});
+  }
+  if (currentBuffer == undefined or buffers.indexOf(currentBuffer) == -1) {
+    currentBuffer = buffers[0];
+  }
+
+  term.clear();
+  if (term.height() <= 3) {
+    term.moveCursor(0, 0);
+    console.log("Terminal is too short.");
+    return;
+  }
+
+  redrawStatusBar();
+  redrawCurrentBuffer();
+}
+
+function redrawStatusBar() {
+  term.moveCursor(0, term.height() - 2);
+  term.setAttribute('reverse');
+  var text = ' ' + currentBuffer.name + ' ';
+  var x = 0;
+  while (x < term.width()) {
+    if (x < text.length()) {
+      var c = text[x], cw = term.characterWidth(c);
+      term.putCharacter(c);
+      for (var i = 1; i <= cw; i++) {
+        term.putCharacter(' ');
+      }
+      x += cw;
+    } else {
+      term.putCharacter(' ');
+      x++;
+    }
+  }
 }
 
 function onKeypress(char) {

@@ -26,7 +26,7 @@ Handle<Value> GetCursorColumn(const Arguments& args);
 
 void PrintString(const string& message);
 void PrintLine(const string& message);
-void PrintException(const string& prefix, const TryCatch& try_catch);
+void ReportException(const string& prefix, const TryCatch& try_catch);
 void PauseAndDisplayMessage(const string& message);
 int WaitForKeypress();
 void MainLoop();
