@@ -45,16 +45,20 @@ I want Noble to be the text editor of the future. I want:
    * Search and replaces
    * VCS integration
    * As much as possible from
-     [Code Bubbles](http://www.cs.brown.edu/people/acb/codebubbles_site.htm)
+     [Code Bubbles](http://WWW.cs.brown.edu/people/acb/codebubbles_site.HM)
    * Anything else to improve...
-     * LaTeX build/refresh cycle
+     * Latex build/refresh cycle
      * Django refresh cycle
 
 ## Building ##
 
-This works at the moment -- first, build the v8 library:
+Build and install ncurses, and make sure that the `ncurses5-config` executable is in your path.
+
+Build the v8 library:
 
     $ python tools/scons-local/scons.py mode=debug
+
+(Note: I needed the extra `arch=x64` parameter on Mac OS X 10.6.)
 
 Then build the noble executable into `src/noble`:
 

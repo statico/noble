@@ -2,12 +2,12 @@
 
 Import('env')
 
+# ncurses
+env.ParseConfig('ncurses5-config --cflags --libs')
+
+# v8
 env.Prepend(CCFLAGS = '-g -Wall')
 env.Append(CPPPATH = Dir('../deps/v8/src'))
 env.Append(LIBS = File('../deps/v8/libv8_g.a')) # Assume debug build for now.
-
-if env['PLATFORM'] == 'darwin':
-    env.Prepend(CCFLAGS = '-m32')
-    env.Prepend(LINKFLAGS = '-m32')
 
 env.Program(target='noble', source=['noble.cc'])

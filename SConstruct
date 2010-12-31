@@ -1,6 +1,9 @@
 # -*- mode: python -*-
 
-env = Environment()
+# Without this ENV snippet, Scons won't find executables in MacPorts'
+# installation path, /opt/local/bin.
+import os
+env = Environment(ENV = {'PATH' : os.environ['PATH']})
 
 # Include the v8 SConstruct file which, unfortunately, automatically builds v8.
 # TODO: Improve this.
