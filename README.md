@@ -23,7 +23,7 @@ I want Noble to be the text editor of the future. I want:
    * Buffers
 1. Get people interested
    * Adopt GitHub
-   * Create a central package repo
+   * Create a central package repo with easy install/updating
    * Create a snippets repo
    * Create a feature comparison grid
 1. OS Integration
@@ -89,7 +89,7 @@ in order from lowest-level (C) to highest-level (user interface):
 1. A small kernel with minimal functions written in C which are made
    available to JavaScript, such as `eval`, `loadFile` and `reallyExit`.
 1. An event loop which fires events on keystrokes, system signals, and
-   a tick every 1 second.
+   a tick every 1 second. (Use libev, like Node.)
 1. A basic display system (main area, status bar, command line/minibuffer)
 1. Buffer management
 1. Buffer-rendering system
