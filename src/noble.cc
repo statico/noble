@@ -41,6 +41,19 @@ Handle<Value> PutString(const Arguments& args) {
   return Undefined();
 }
 
+Handle<Value> Exit(const Arguments& args) {
+  int code = 0;
+  if (args.Length() > 0) {
+    if (!args[0]->IsInt32())
+      ThrowException(Exception::TypeError(String::New("Bad argument")));
+    else
+      code = args[0]->Int32Value();
+  }
+
+  endwin();
+  exit(code);
+}
+
 void PrintException(const TryCatch& try_catch) {
   HandleScope scope;
 
@@ -76,6 +89,7 @@ int main(int argc, char* argv[]) {
   // built-in global functions.
   Local<ObjectTemplate> global = ObjectTemplate::New();
   global->Set(String::New("puts"), FunctionTemplate::New(PutString));
+  global->Set(String::New("exit"), FunctionTemplate::New(Exit));
   Persistent<Context> context = Context::New(NULL, global);
 
   Context::Scope context_scope(context);
@@ -104,7 +118,17 @@ int main(int argc, char* argv[]) {
     return 1;
   }
 
-  getch();
+  // Listen for keypresses
+  while (int c = getch()) {
+    Local<Value> value = context->Global()->Get(String::New("handleKeypress"));
+    if (value->IsFunction()) {
+      Handle<Function> callback = Handle<Function>::Cast(value);
+      Local<Value> argv[1] = { Integer::New(c) };
+      callback->Call(context->Global(), 1, argv);
+    } else {
+      addstr("handleKeypress is not a function\n");
+    }
+  }
 
   endwin();
   return 0;
