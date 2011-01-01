@@ -1,7 +1,9 @@
 *.a
 *.o
+*.s
 *.pyc
 *.scons*
 #*#
 *~
 TAGS
+Makefile
