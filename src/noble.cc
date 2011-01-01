@@ -50,7 +50,6 @@ Handle<Value> Exit(const Arguments& args) {
       code = args[0]->Int32Value();
   }
 
-  endwin();
   exit(code);
 }
 
@@ -72,6 +71,10 @@ void PrintException(const TryCatch& try_catch) {
   fflush(stderr);
 }
 
+void CleanUpScreen() {
+  endwin();
+}
+
 int main(int argc, char* argv[]) {
   if (argc != 2) {
     fprintf(stderr, "Usage: %s <noble.js>\n", argv[0]);
@@ -80,6 +83,8 @@ int main(int argc, char* argv[]) {
   string filename(argv[1]);
 
   initscr();
+  atexit((void) endwin);
+
   noecho();
 
   HandleScope scope;
@@ -130,6 +135,5 @@ int main(int argc, char* argv[]) {
     }
   }
 
-  endwin();
   return 0;
 }
