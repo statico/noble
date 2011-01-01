@@ -56,7 +56,7 @@ Build and install ncurses, and make sure that the `ncurses5-config` executable i
 
 Build the v8 library:
 
-    $ python tools/scons-local/scons.py mode=debug
+    $ python tools/scons-local/scons.py
 
 (Note: I needed the extra `arch=x64` parameter on Mac OS X 10.6.)
 
