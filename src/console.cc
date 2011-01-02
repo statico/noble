@@ -14,13 +14,15 @@ Handle<Value> Log(const Arguments& args) {
   HandleScope scope;
 
   int count = args.Length();
-  if (count < 1) return Undefined();
+  if (count < 1)
+    return Undefined();
 
   for (int i = 0; i < count; i++) {
     Handle<Value> arg = args[0];
     String::Utf8Value value(arg);
     Console::PrintString(string(*value));
-    if (i < count - 1) Console::PrintString("\n");
+    if (i == count - 1)
+      Console::PrintString("\n");
   }
 
   return Undefined();
@@ -31,7 +33,7 @@ void Console::PrintString(const string& message) {
 }
 
 void Console::PrintLine(const string& message) {
-  Console::PrintString(message + string("\n"));
+  Console::PrintString(message + "\n");
 }
 
 void Console::PrintException(const TryCatch& try_catch) {
@@ -47,8 +49,7 @@ void Console::PrintException(const TryCatch& try_catch) {
     Local<Value> er = try_catch.Exception();
     String::Utf8Value msg(!er->IsObject() ? er->ToString()
                          : er->ToObject()->Get(String::New("message"))->ToString());
-    Console::PrintString("Error:");
-    Console::PrintLine(string(*msg));
+    Console::PrintLine("Error: " + string(*msg));
   }
 }
 
@@ -57,6 +58,7 @@ int Console::WaitForKeypress() {
 }
 
 void Console::MainLoop() {
+  // TODO: Add periodic timers.
   HandleScope scope;
   Local<Object> global = Context::GetCurrent()->Global();
 
@@ -66,6 +68,7 @@ void Console::MainLoop() {
       Handle<Function> callback = Handle<Function>::Cast(value);
       Local<Value> argv[1] = { Integer::New(c) };
       callback->Call(global, 1, argv);
+      doupdate();
     } else {
       Console::PrintLine("onKeypress is not a function");
     }
