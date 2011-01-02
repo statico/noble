@@ -7,9 +7,14 @@ env.ParseConfig('ncurses5-config --cflags --libs')
 
 # v8
 env.Prepend(CCFLAGS = '-g -Wall')
-if env['PLATFORM'] == 'darwin':
-    env.Prepend(CCFLAGS = '-fvisibility=hidden')
 env.Append(CPPPATH = Dir('../deps/v8/src'))
 env.Append(LIBS = File('../deps/v8/libv8.a'))
+if env['PLATFORM'] == 'darwin':
+    env.Append(CCFLAGS = '-fvisibility=hidden -m64')
 
-env.Program(target='noble', source=['noble.cc'])
+env.Program(target='noble', source=[
+        'console.cc',
+        'file.cc',
+        'global.cc',
+        'noble.cc',
+        ])

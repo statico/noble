@@ -113,16 +113,22 @@ implementation but will need a better long-term implementation
 * OS integration on Linux, Mac OS X and maybe Windows
 * Figuring out how to bundle the core runtime
 
+## Code Style ##
+
+*C++:* Following the [Google C++ Style Guide](http://google-styleguide.googlecode.com/svn/trunk/cppguide.xml), with the exception of allowing `using` directives to make code cleaner.
+
+*JavaScript:* [Google JavaScript Style Guide](http://google-styleguide.googlecode.com/svn/trunk/javascriptguide.xml)
+
 ## Credit ##
 
 * v8
 * Node
 * TODO: List all important links here
 
-### Contributors ###
+### Indirect Contributors ###
 
-* Ian
-* Russell
+* Russell Neches
+* Ryan Dahl (Node.js)
 
 ### Stuff ripped off from Node.js ##
 

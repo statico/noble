@@ -1,14 +1,9 @@
-var events = {};
-events.onKeypress = function(arguments) {
-    puts(' ' + arguments.toString());
-};
+console.log("I'm feeling noble!");
 
-puts("I'm feeling noble!\n");
-
-function handleKeypress(char) {
+function onKeypress(char) {
   if (char == 113) { // 'q'
     exit();
   } else {
-    puts("Keypress: " + char + "\n");
+    console.log("Keypress: " + char);
   }
 }

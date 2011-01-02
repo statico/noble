@@ -1,91 +1,26 @@
-// Copyright 2010 the Noble project authors. All rights reserved.
+// Copyright 2011 the Noble project authors. All rights reserved.
+
+#include <string>
 
 #include <curses.h>
 #include <stdio.h>
 #include <v8.h>
 
-#include <string>
+#include "noble.h"
+#include "console.h"
+#include "file.h"
+#include "global.h"
 
 using namespace std;
 using namespace v8;
-
-// Reads a file into a v8 string.
-// (from v8/samples/process.css)
-Handle<String> ReadFile(const string& name) {
-  FILE* file = fopen(name.c_str(), "rb");
-  if (file == NULL) return Handle<String>();
-
-  fseek(file, 0, SEEK_END);
-  int size = ftell(file);
-  rewind(file);
-
-  char* chars = new char[size + 1];
-  chars[size] = '\0';
-  for (int i = 0; i < size;) {
-    int read = fread(&chars[i], 1, size - i, file);
-    i += read;
-  }
-  fclose(file);
-  Handle<String> result = String::New(chars, size);
-  delete[] chars;
-  return result;
-}
-
-Handle<Value> PutString(const Arguments& args) {
-  if (args.Length() < 1) return Undefined();
-  HandleScope scope;
-  Handle<Value> arg = args[0];
-  String::Utf8Value value(arg);
-  string str(*value);
-  addstr(str.c_str());
-  return Undefined();
-}
-
-Handle<Value> Exit(const Arguments& args) {
-  int code = 0;
-  if (args.Length() > 0) {
-    if (!args[0]->IsInt32())
-      ThrowException(Exception::TypeError(String::New("Bad argument")));
-    else
-      code = args[0]->Int32Value();
-  }
-
-  exit(code);
-}
-
-void PrintException(const TryCatch& try_catch) {
-  HandleScope scope;
-
-  String::Utf8Value trace(try_catch.StackTrace());
-  if (trace.length() > 0) {
-    fprintf(stderr, "Traceback:\n%s\n", *trace);
-  } else {
-    // this really only happens for RangeErrors, since they're the only
-    // kind that won't have all this info in the trace.
-    Local<Value> er = try_catch.Exception();
-    String::Utf8Value msg(!er->IsObject() ? er->ToString()
-                         : er->ToObject()->Get(String::New("message"))->ToString());
-    fprintf(stderr, "Error: %s\n", *msg);
-  }
-
-  fflush(stderr);
-}
-
-void CleanUpScreen() {
-  endwin();
-}
+using namespace noble;
 
 int main(int argc, char* argv[]) {
   if (argc != 2) {
-    fprintf(stderr, "Usage: %s <noble.js>\n", argv[0]);
+    printf("Usage: %s <noble.js>\n", argv[0]);
     return 1;
   }
   string filename(argv[1]);
-
-  initscr();
-  atexit((void) endwin);
-
-  noecho();
 
   HandleScope scope;
   TryCatch try_catch;
@@ -93,47 +28,42 @@ int main(int argc, char* argv[]) {
   // Create a template for the global object and set the
   // built-in global functions.
   Local<ObjectTemplate> global = ObjectTemplate::New();
-  global->Set(String::New("puts"), FunctionTemplate::New(PutString));
-  global->Set(String::New("exit"), FunctionTemplate::New(Exit));
   Persistent<Context> context = Context::New(NULL, global);
-
   Context::Scope context_scope(context);
 
+  // Create and initialize globals.
+  Global::Initialize(context->Global());
+
+  Local<Object> file = Object::New();
+  File::Initialize(file);
+  global->Set(String::NewSymbol("file"), file);
+
+  // Assume that we're using a console UI for now.
+  Local<Object> console = Object::New();
+  Console::Initialize(console);
+  global->Set(String::NewSymbol("console"), console);
+
   // Load noble.js
-  Handle<String> source = ReadFile(filename);
+  Handle<String> source = File::ReadFileIntoString(filename);
   if (source.IsEmpty()) {
-    fprintf(stderr, "Error reading init script\n");
+    Console::PrintLine("Error reading init script");
+    Console::WaitForKeypress();
     return 1;
   }
 
   // Compile
   Handle<Script> script = Script::Compile(source);
   if (script.IsEmpty()) {
-    PrintException(try_catch);
+    Console::PrintException(try_catch);
+    Console::WaitForKeypress();
     return 1;
   }
 
   // Run
-  addstr("Running ");
-  addstr(filename.c_str());
-  addstr("...\n");
-  Handle<Value> result = script->Run();
-  if (result.IsEmpty()) {
-    PrintException(try_catch);
-    return 1;
-  }
+  script->Run();
 
-  // Listen for keypresses
-  while (int c = getch()) {
-    Local<Value> value = context->Global()->Get(String::New("handleKeypress"));
-    if (value->IsFunction()) {
-      Handle<Function> callback = Handle<Function>::Cast(value);
-      Local<Value> argv[1] = { Integer::New(c) };
-      callback->Call(context->Global(), 1, argv);
-    } else {
-      addstr("handleKeypress is not a function\n");
-    }
-  }
+  // Loop
+  Console::MainLoop();
 
   return 0;
 }
