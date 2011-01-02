@@ -15,6 +15,23 @@ using namespace std;
 using namespace v8;
 using namespace noble;
 
+void InitGlobal() {
+  HandleScope scope;
+  Local<Object> global = Context::GetCurrent()->Global();
+
+  // Create and initialize globals.
+  Global::Initialize(global);
+
+  Local<Object> file = Object::New();
+  File::Initialize(file);
+  global->Set(String::NewSymbol("file"), file);
+
+  // Assume that we're using a console UI for now.
+  Local<Object> console = Object::New();
+  Console::Initialize(console);
+  global->Set(String::NewSymbol("console"), console);
+}
+
 int main(int argc, char* argv[]) {
   if (argc != 2) {
     printf("Usage: %s <noble.js>\n", argv[0]);
@@ -31,17 +48,8 @@ int main(int argc, char* argv[]) {
   Persistent<Context> context = Context::New(NULL, global);
   Context::Scope context_scope(context);
 
-  // Create and initialize globals.
-  Global::Initialize(context->Global());
-
-  Local<Object> file = Object::New();
-  File::Initialize(file);
-  global->Set(String::NewSymbol("file"), file);
-
-  // Assume that we're using a console UI for now.
-  Local<Object> console = Object::New();
-  Console::Initialize(console);
-  global->Set(String::NewSymbol("console"), console);
+  // Populate the global context.
+  InitGlobal();
 
   // Load noble.js
   Handle<String> source = File::ReadFileIntoString(filename);
