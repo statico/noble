@@ -2,6 +2,7 @@
 
 I want Noble to be the text editor of the future. I want:
 
+* To further the state of open-source text editors
 * The speed and flexibility of editing text like Vim
 * The external-process integration level of Emacs
 * The hot features and OS-level integration of TextMate (but for Linux
@@ -16,31 +17,33 @@ I want Noble to be the text editor of the future. I want:
    * V8 + tiny kernel
    * Vim and Emacs emulation
    * Basic modes, selection, undo
-1. Ability to hack Noble with Noble
+1. Ability to hack Noble with Noble (dogfood)
    * Write and save reliably
    * Syntax highlighting
    * Indenting
    * Buffers
 1. Get people interested
-   * Adopt GitHub
-   * Create a central package repo with easy install/updating
+   * Adopt GitHub (+wiki, +issue-tracking)
+   * Create a central add-on repo with easy install/updating
    * Create a snippets repo
+   * Announce a 0.1 once it's good enough to edit itself
    * Create a feature comparison grid
+   * Python, Ruby, HTML and CSS support
 1. OS Integration
-   * Things like drawers, toolbars, built-in help and Growl support on Mac OS X
-   * GTK/Gnome support on Linux
-   * Fullscreen
-1. Add "modern" text editor features
+   * Mac OS X: Things like drawers, toolbars, built-in help, and Growl support
+   * Gnome: Similar support as OS X
+   * Fullscreen (and a "minimalist" mode with wide margins)
+1. Add "modern" text editor features (kinda in order)
+   * Project browser
+   * Tab/buffer browser
    * Multilingual/RTL ease-of-use
    * IntelliSense
-   * Tab/buffer browser
-   * Project browser
+   * Great color schemes (steal the popular ones)
    * Quickly find functions, methods, files, whatever
    * Snippets
    * Image and SVG support in buffers
    * Great built-in documentation
    * Compatibility modes for Vim, Emacs and Vim (help them wean off)
-   * Great color schemes (steal the popular ones)
    * Customization GUI
    * Search and replaces
    * VCS integration
