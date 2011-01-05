@@ -2,8 +2,8 @@
 
 Import('env')
 
-# ncurses
-env.ParseConfig('ncurses5-config --cflags --libs')
+# S-Lang
+env.ParseConfig('pkg-config --cflags --libs slang')
 
 # v8
 env.Prepend(CCFLAGS = '-g -Wall')

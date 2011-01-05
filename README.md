@@ -55,17 +55,19 @@ I want Noble to be the text editor of the future. I want:
 
 ## Building ##
 
-Build and install ncurses, and make sure that the `ncurses5-config` executable is in your path.
+Build and install the [S-Lang library](http://www.jedsoft.org/slang/) and make sure that the `pkg-config slang` command succeeds.
 
 Build the v8 library:
 
     $ python tools/scons-local/scons.py
 
-(Note: I needed the extra `arch=x64` parameter on Mac OS X 10.6.)
+(Note: I needed the extra `arch=x64` parameter on Mac OS X 10.6 with MacPorts.)
 
 Then build the noble executable into `src/noble`:
 
     $ python tools/scons-local/scons.py src
+
+(Again, I needed arch=x64 here as well on Mac OS X.)
 
 ## Hacking ##
 

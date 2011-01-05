@@ -1,9 +1,11 @@
 // Copyright 2011 the Noble project authors. All rights reserved.
 
-#include <curses.h>
 #include <stdio.h>
 
 #include "console.h"
+
+// Needs to be after any v8 headers.
+#include "slang.h"
 
 namespace noble {
 
@@ -29,7 +31,8 @@ Handle<Value> Log(const Arguments& args) {
 }
 
 void Console::PrintString(const string& message) {
-  addstr(message.c_str());
+  // const_cast should be okay here, right? Right? Maybe?
+  SLsmg_write_string(const_cast<char *>(message.c_str()));
 }
 
 void Console::PrintLine(const string& message) {
@@ -54,7 +57,7 @@ void Console::PrintException(const TryCatch& try_catch) {
 }
 
 int Console::WaitForKeypress() {
-  return getch();
+  return SLang_getkey();
 }
 
 void Console::MainLoop() {
@@ -62,13 +65,15 @@ void Console::MainLoop() {
   HandleScope scope;
   Local<Object> global = Context::GetCurrent()->Global();
 
-  while (int c = getch()) {
+  SLsmg_refresh(); // Flush anything that might have been written.
+
+  while (int c = Console::WaitForKeypress()) {
     Local<Value> value = global->Get(String::New("onKeypress"));
     if (value->IsFunction()) {
       Handle<Function> callback = Handle<Function>::Cast(value);
       Local<Value> argv[1] = { Integer::New(c) };
       callback->Call(global, 1, argv);
-      doupdate();
+      SLsmg_refresh();
     } else {
       Console::PrintLine("onKeypress is not a function");
     }
@@ -76,7 +81,8 @@ void Console::MainLoop() {
 }
 
 void Console::Finish() {
-  endwin();
+  SLsmg_reset_smg();
+  SLang_reset_tty();
 }
 
 void Console::Initialize(Handle<Object> target) {
@@ -84,8 +90,12 @@ void Console::Initialize(Handle<Object> target) {
 
   NOBLE_SET_METHOD(target, "log", Log);
 
-  initscr();
-  noecho();
+  SLtt_get_terminfo();
+  SLang_init_tty(-1, 0, 0);
+  SLsmg_init_smg();
+  SLsmg_Newline_Behavior = SLSMG_NEWLINE_MOVES;
+  SLtt_set_color(0, NULL, (char *) "white", (char *) "default"); // Nicer defaults.
+
   atexit(Console::Finish);
 }
 
