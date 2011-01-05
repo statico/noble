@@ -117,7 +117,7 @@ void Console::Initialize(Handle<Object> target) {
   NOBLE_SET_METHOD(target, "log", Log);
 
   SLtt_get_terminfo();
-  SLang_init_tty(-1, 0, 0);
+  SLang_init_tty(-1, 1, 0); // Don't change interrupt key, pass us ^Q/^S.
   SLsmg_init_smg();
   SLsmg_Newline_Behavior = SLSMG_NEWLINE_MOVES;
   SLtt_set_color(0, NULL, (char *) "white", (char *) "default"); // Nicer defaults.
