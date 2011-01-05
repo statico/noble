@@ -54,21 +54,23 @@ int main(int argc, char* argv[]) {
   // Load noble.js
   Handle<String> source = File::ReadFileIntoString(filename);
   if (source.IsEmpty()) {
-    Console::PrintLine("Error reading init script");
-    Console::WaitForKeypress();
+    Console::PauseAndDisplayMessage("Couldn't read file " + filename);
     return 1;
   }
 
   // Compile
-  Handle<Script> script = Script::Compile(source);
+  Handle<Script> script = Script::Compile(source, String::NewSymbol(filename.c_str()));
   if (script.IsEmpty()) {
-    Console::PrintException(try_catch);
-    Console::WaitForKeypress();
+    Console::PrintException("Couldn't compile init script", try_catch);
     return 1;
   }
 
   // Run
+  try_catch.Reset();
   script->Run();
+  if (try_catch.HasCaught()) {
+    Console::PrintException("Couldn't run init script", try_catch);
+  }
 
   // Loop
   Console::MainLoop();

@@ -14,9 +14,13 @@ using namespace v8;
 
 class Console {
  public:
+  static void Clear();
+  static void MoveCursor(int x, int y);
   static void PrintString(const string& message);
   static void PrintLine(const string& message);
-  static void PrintException(const TryCatch& try_catch);
+  static void PrintException(const string& prefix,
+                             const TryCatch& try_catch);
+  static void PauseAndDisplayMessage(const string& message);
   static int WaitForKeypress();
   static void MainLoop();
   static void Finish();
