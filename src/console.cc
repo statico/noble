@@ -12,13 +12,15 @@ namespace noble {
 using namespace v8;
 using namespace std;
 
+namespace console {
+
 Handle<Value> Log(const Arguments& args) {
   HandleScope scope;
 
-  int count = args.Length();
-  if (count < 1)
-    return Undefined();
+  NOBLE_ASSERT_LENGTH(args, 1);
+  NOBLE_ASSERT_VALUE(args[0], IsString);
 
+  int count = args.Length();
   for (int i = 0; i < count; i++) {
     Handle<Value> arg = args[0];
     String::Utf8Value value(arg);
@@ -29,6 +31,82 @@ Handle<Value> Log(const Arguments& args) {
 
   return Undefined();
 }
+
+Handle<Value> MoveCursor(const Arguments& args) {
+  HandleScope scope;
+
+  NOBLE_ASSERT_LENGTH(args, 2);
+  NOBLE_ASSERT_VALUE(args[0], IsInt32);
+  NOBLE_ASSERT_VALUE(args[1], IsInt32);
+
+  uint32_t x = args[0]->Uint32Value();
+  uint32_t y = args[1]->Uint32Value();
+  Console::MoveCursor(x, y);
+
+  return Undefined();
+}
+
+Handle<Value> Clear(const Arguments& args) {
+  HandleScope scope;
+
+  NOBLE_ASSERT_LENGTH(args, 0);
+
+  Console::Clear();
+  return Undefined();
+}
+
+Handle<Value> Update(const Arguments& args) {
+  HandleScope scope;
+
+  NOBLE_ASSERT_LENGTH(args, 0);
+
+  SLsmg_refresh();
+
+  return Undefined();
+}
+
+Handle<Value> SetColor(const Arguments& args) {
+  HandleScope scope;
+
+  NOBLE_ASSERT_LENGTH(args, 0);
+  NOBLE_ASSERT_VALUE(args[0], IsString);
+  NOBLE_ASSERT_VALUE(args[1], IsString);
+
+  String::Utf8Value fg(args[0]);
+  String::Utf8Value bg(args[1]);
+  SLtt_set_color(0, NULL, *fg, *bg);
+
+  return Undefined();
+}
+
+Handle<Value> SetAttribute(const Arguments& args) {
+  HandleScope scope;
+
+  // We could do something smarter here such as allowing multiple
+  // attribute arguments.
+  NOBLE_ASSERT_LENGTH(args, 0);
+  NOBLE_ASSERT_VALUE(args[0], IsString);
+
+  String::Utf8Value value(args[0]);
+  string attr(*value);
+
+  if (attr == "bold")
+    SLtt_add_color_attribute(0, SLTT_BOLD_MASK);
+  else if (attr == "blink")
+    SLtt_add_color_attribute(0, SLTT_BLINK_MASK);
+  else if (attr == "underline")
+      SLtt_add_color_attribute(0, SLTT_ULINE_MASK);
+  else if (attr == "reverse")
+      SLtt_add_color_attribute(0, SLTT_REV_MASK);
+  else if (attr == "normal")
+      SLtt_add_color_attribute(0, 0);
+  else
+    NOBLE_THROW(Error, "Invalid attribute");
+
+  return Undefined();
+}
+
+} // namespace console
 
 void Console::MoveCursor(int x, int y) {
   SLsmg_gotorc(y, x);
@@ -114,7 +192,12 @@ void Console::Finish() {
 void Console::Initialize(Handle<Object> target) {
   HandleScope scope;
 
-  NOBLE_SET_METHOD(target, "log", Log);
+  NOBLE_SET_METHOD(target, "log", console::Log);
+  NOBLE_SET_METHOD(target, "moveCursor", console::MoveCursor);
+  NOBLE_SET_METHOD(target, "clear", console::Clear);
+  NOBLE_SET_METHOD(target, "update", console::Update);
+  NOBLE_SET_METHOD(target, "setColor", console::SetColor);
+  NOBLE_SET_METHOD(target, "setAttribute", console::SetAttribute);
 
   SLtt_get_terminfo();
   SLang_init_tty(-1, 1, 0); // Don't change interrupt key, pass us ^Q/^S.

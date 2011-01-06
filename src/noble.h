@@ -10,6 +10,19 @@
   obj->Set(String::NewSymbol(name),          \
            FunctionTemplate::New(callback)->GetFunction())
 
+// Reusable snippets.
+#define NOBLE_THROW(type, message) \
+  return ThrowException(Exception::type(String::New(message)));
+
+#define NOBLE_ASSERT_LENGTH(value, length) \
+  if (value.Length() != length) \
+    NOBLE_THROW(Error, "Incorrect number of arguments");
+
+#define NOBLE_ASSERT_VALUE(value, method) \
+  if (!value->method())                          \
+    NOBLE_THROW(TypeError, "Bad argument");
+
+
 // A macro to disallow the copy constructor and operator= functions
 // This should be used in the private: declarations for a class. (From
 // the Google C++ Style Guide.)

@@ -7,6 +7,19 @@ namespace noble {
 using namespace v8;
 using namespace std;
 
+namespace file {
+
+Handle<Value> ReadFile(const Arguments& args) {
+  HandleScope scope;
+
+  NOBLE_ASSERT_LENGTH(args, 1);
+
+  String::Utf8Value filename(args[0]);
+  return File::ReadFileIntoString(string(*filename));
+}
+
+} // namespace file
+
 // Reads a file into a v8 string.
 // (Very naive. Stolen from v8/samples/process.css)
 Handle<String> File::ReadFileIntoString(const string& name) {
@@ -29,20 +42,10 @@ Handle<String> File::ReadFileIntoString(const string& name) {
   return result;
 }
 
-Handle<Value> ReadFile(const Arguments& args) {
-  HandleScope scope;
-
-  if (args.Length() < 1)
-      ThrowException(Exception::TypeError(String::New("Argument required")));
-
-  String::Utf8Value filename(args[0]);
-  return File::ReadFileIntoString(string(*filename));
-}
-
 void File::Initialize(Handle<Object> target) {
   HandleScope scope;
 
-  NOBLE_SET_METHOD(target, "readFile", ReadFile);
+  NOBLE_SET_METHOD(target, "readFile", file::ReadFile);
 }
 
 } // namespace noble

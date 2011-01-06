@@ -59,7 +59,8 @@ int main(int argc, char* argv[]) {
   }
 
   // Compile
-  Handle<Script> script = Script::Compile(source, String::NewSymbol(filename.c_str()));
+  Handle<Script> script = Script::Compile(source,
+                                          String::NewSymbol(filename.c_str()));
   if (script.IsEmpty()) {
     Console::PrintException("Couldn't compile init script", try_catch);
     return 1;
