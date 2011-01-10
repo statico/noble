@@ -14,7 +14,7 @@ I want Noble to be the text editor of the future. I want:
 ### Plan ###
 
 1. A basic UI in console
-   * V8 + tiny kernel
+   * V8 + tiny kernel (`binary`, `io`, `fs`, `system` and `console` modules specified by [CommonJS](http://wiki.commonjs.org/wiki/CommonJS)
    * Vim and Emacs emulation
    * Basic modes, selection, undo
 1. Ability to hack Noble with Noble (dogfood)
