@@ -14,7 +14,7 @@ if env['PLATFORM'] == 'darwin':
 
 env.Program(target='noble', source=[
         'console.cc',
-        'file.cc',
+        'fs.cc',
         'global.cc',
         'noble.cc',
         ])

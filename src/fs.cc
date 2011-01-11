@@ -1,14 +1,14 @@
 // Copyright 2011 the Noble project authors. All rights reserved.
 
-#include "file.h"
+#include "fs.h"
 
 namespace noble {
-namespace file {
+namespace fs {
 
 using namespace v8;
 using namespace std;
 
-Handle<Value> ReadFile(const Arguments& args) {
+Handle<Value> Read(const Arguments& args) {
   HandleScope scope;
 
   NOBLE_ASSERT_LENGTH(args, 1);
@@ -42,7 +42,7 @@ Handle<String> ReadFileIntoString(const string& name) {
 void Initialize(Handle<Object> target) {
   HandleScope scope;
 
-  NOBLE_SET_METHOD(target, "readFile", file::ReadFile);
+  NOBLE_SET_METHOD(target, "read", fs::Read);
 }
 
-} } // namespace noble::file
+} } // namespace noble::fs

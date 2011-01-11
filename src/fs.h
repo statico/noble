@@ -1,21 +1,22 @@
 // Copyright 2011 the Noble project authors. All rights reserved.
 
-#ifndef SRC_FILE_H_
-#define SRC_FILE_H_
+#ifndef SRC_FS_H_
+#define SRC_FS_H_
 
 #include <string>
 
 #include "noble.h"
 
 namespace noble {
-namespace file {
+namespace fs {
 
 using namespace v8;
 using namespace std;
 
-void Initialize(Handle<Object> target);
+Handle<Value> Read(const Arguments& args);
 Handle<String> ReadFileIntoString(const string& name);
+void Initialize(Handle<Object> target);
 
-} } // namespace noble::file
+} } // namespace noble::fs
 
-#endif // SRC_FILE_H_
+#endif // SRC_FS_H_

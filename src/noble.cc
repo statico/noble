@@ -8,7 +8,7 @@
 
 #include "noble.h"
 #include "console.h"
-#include "file.h"
+#include "fs.h"
 #include "global.h"
 
 using namespace std;
@@ -22,9 +22,9 @@ void InitGlobal() {
   // Create and initialize globals.
   global::Initialize(global);
 
-  Local<Object> file = Object::New();
-  file::Initialize(file);
-  global->Set(String::NewSymbol("file"), file);
+  Local<Object> fs = Object::New();
+  fs::Initialize(fs);
+  global->Set(String::NewSymbol("fs"), fs);
 
   // Assume that we're using a console UI for now.
   Local<Object> console = Object::New();
@@ -52,7 +52,7 @@ int main(int argc, char* argv[]) {
   InitGlobal();
 
   // Load noble.js
-  Handle<String> source = file::ReadFileIntoString(filename);
+  Handle<String> source = fs::ReadFileIntoString(filename);
   if (source.IsEmpty()) {
     console::PauseAndDisplayMessage("Couldn't read file " + filename);
     return 1;
