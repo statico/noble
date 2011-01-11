@@ -8,25 +8,22 @@
 #include "noble.h"
 
 namespace noble {
+namespace console {
 
 using namespace std;
 using namespace v8;
 
-class Console {
- public:
-  static void Clear();
-  static void MoveCursor(int x, int y);
-  static void PrintString(const string& message);
-  static void PrintLine(const string& message);
-  static void PrintException(const string& prefix,
-                             const TryCatch& try_catch);
-  static void PauseAndDisplayMessage(const string& message);
-  static int WaitForKeypress();
-  static void MainLoop();
-  static void Finish();
-  static void Initialize(Handle<Object> target);
-};
+void Clear();
+void MoveCursor(int x, int y);
+void PrintString(const string& message);
+void PrintLine(const string& message);
+void PrintException(const string& prefix, const TryCatch& try_catch);
+void PauseAndDisplayMessage(const string& message);
+int WaitForKeypress();
+void MainLoop();
+void Finish();
+void Initialize(Handle<Object> target);
 
-} // namespace noble
+} } // namespace noble::console
 
 #endif // NOBLE_CONSOLE_H_

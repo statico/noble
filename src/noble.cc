@@ -28,7 +28,7 @@ void InitGlobal() {
 
   // Assume that we're using a console UI for now.
   Local<Object> console = Object::New();
-  Console::Initialize(console);
+  console::Initialize(console);
   global->Set(String::NewSymbol("console"), console);
 }
 
@@ -54,15 +54,14 @@ int main(int argc, char* argv[]) {
   // Load noble.js
   Handle<String> source = file::ReadFileIntoString(filename);
   if (source.IsEmpty()) {
-    Console::PauseAndDisplayMessage("Couldn't read file " + filename);
+    console::PauseAndDisplayMessage("Couldn't read file " + filename);
     return 1;
   }
 
   // Compile
-  Handle<Script> script = Script::Compile(source,
-                                          String::NewSymbol(filename.c_str()));
+  Handle<Script> script = Script::Compile(source, String::NewSymbol(filename.c_str()));
   if (script.IsEmpty()) {
-    Console::PrintException("Couldn't compile init script", try_catch);
+    console::PrintException("Couldn't compile init script", try_catch);
     return 1;
   }
 
@@ -70,11 +69,11 @@ int main(int argc, char* argv[]) {
   try_catch.Reset();
   script->Run();
   if (try_catch.HasCaught()) {
-    Console::PrintException("Couldn't run init script", try_catch);
+    console::PrintException("Couldn't run init script", try_catch);
   }
 
   // Loop
-  Console::MainLoop();
+  console::MainLoop();
 
   return 0;
 }
