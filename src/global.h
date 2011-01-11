@@ -6,14 +6,12 @@
 #include "noble.h"
 
 namespace noble {
+namespace global {
 
 using namespace v8;
 
-class Global {
- public:
-  static void Initialize(Handle<Object> target);
-};
+void Initialize(Handle<Object> target);
 
-} // namespace noble
+} } // namespace noble::global
 
 #endif // NOBLE_GLOBAL_H_

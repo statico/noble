@@ -3,10 +3,9 @@
 #include "global.h"
 
 namespace noble {
+namespace global {
 
 using namespace v8;
-
-namespace global {
 
 Handle<Value> Exit(const Arguments& args) {
   HandleScope scope;
@@ -22,12 +21,10 @@ Handle<Value> Exit(const Arguments& args) {
 
 }
 
-} // namespace global
-
-void Global::Initialize(Handle<Object> target) {
+void Initialize(Handle<Object> target) {
   HandleScope scope;
 
   NOBLE_SET_METHOD(target, "exit", global::Exit);
 }
 
-} // namespace noble
+} } // namespace noble::global

@@ -20,7 +20,7 @@ void InitGlobal() {
   Local<Object> global = Context::GetCurrent()->Global();
 
   // Create and initialize globals.
-  Global::Initialize(global);
+  global::Initialize(global);
 
   Local<Object> file = Object::New();
   File::Initialize(file);
