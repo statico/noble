@@ -3,11 +3,10 @@
 #include "file.h"
 
 namespace noble {
+namespace file {
 
 using namespace v8;
 using namespace std;
-
-namespace file {
 
 Handle<Value> ReadFile(const Arguments& args) {
   HandleScope scope;
@@ -15,14 +14,12 @@ Handle<Value> ReadFile(const Arguments& args) {
   NOBLE_ASSERT_LENGTH(args, 1);
 
   String::Utf8Value filename(args[0]);
-  return File::ReadFileIntoString(string(*filename));
+  return ReadFileIntoString(string(*filename));
 }
-
-} // namespace file
 
 // Reads a file into a v8 string.
 // (Very naive. Stolen from v8/samples/process.css)
-Handle<String> File::ReadFileIntoString(const string& name) {
+Handle<String> ReadFileIntoString(const string& name) {
   FILE* file = fopen(name.c_str(), "rb");
   if (file == NULL) return Handle<String>();
 
@@ -42,10 +39,10 @@ Handle<String> File::ReadFileIntoString(const string& name) {
   return result;
 }
 
-void File::Initialize(Handle<Object> target) {
+void Initialize(Handle<Object> target) {
   HandleScope scope;
 
   NOBLE_SET_METHOD(target, "readFile", file::ReadFile);
 }
 
-} // namespace noble
+} } // namespace noble::file

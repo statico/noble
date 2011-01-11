@@ -23,7 +23,7 @@ void InitGlobal() {
   global::Initialize(global);
 
   Local<Object> file = Object::New();
-  File::Initialize(file);
+  file::Initialize(file);
   global->Set(String::NewSymbol("file"), file);
 
   // Assume that we're using a console UI for now.
@@ -52,7 +52,7 @@ int main(int argc, char* argv[]) {
   InitGlobal();
 
   // Load noble.js
-  Handle<String> source = File::ReadFileIntoString(filename);
+  Handle<String> source = file::ReadFileIntoString(filename);
   if (source.IsEmpty()) {
     Console::PauseAndDisplayMessage("Couldn't read file " + filename);
     return 1;

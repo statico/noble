@@ -8,16 +8,14 @@
 #include "noble.h"
 
 namespace noble {
+namespace file {
 
 using namespace v8;
 using namespace std;
 
-class File {
- public:
-  static void Initialize(Handle<Object> target);
-  static Handle<String> ReadFileIntoString(const string& name);
-};
+void Initialize(Handle<Object> target);
+Handle<String> ReadFileIntoString(const string& name);
 
-} // namespace noble
+} } // namespace noble::file
 
 #endif // SRC_FILE_H_
