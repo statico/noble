@@ -16,16 +16,16 @@ using namespace std;
 Handle<Value> Log(const Arguments& args) {
   HandleScope scope;
 
-  NOBLE_ASSERT_LENGTH(args, 1);
-  NOBLE_ASSERT_VALUE(args[0], IsString);
-
   int count = args.Length();
   for (int i = 0; i < count; i++) {
-    Handle<Value> arg = args[0];
+    Handle<Value> arg = args[i]->ToString();
     String::Utf8Value value(arg);
     PrintString(string(*value));
-    if (i == count - 1)
+    if (i == count - 1) {
       PrintString("\n");
+    } else {
+      PrintString(" ");
+    }
   }
 
   return Undefined();
@@ -38,9 +38,9 @@ Handle<Value> MoveCursor(const Arguments& args) {
   NOBLE_ASSERT_VALUE(args[0], IsInt32);
   NOBLE_ASSERT_VALUE(args[1], IsInt32);
 
-  uint32_t x = args[0]->Uint32Value();
-  uint32_t y = args[1]->Uint32Value();
-  MoveCursor(x, y);
+  int32_t x = args[0]->Int32Value();
+  int32_t y = args[1]->Int32Value();
+  SLsmg_gotorc(y, x);
 
   return Undefined();
 }
@@ -50,7 +50,9 @@ Handle<Value> Clear(const Arguments& args) {
 
   NOBLE_ASSERT_LENGTH(args, 0);
 
-  Clear();
+  SLsmg_cls();
+  SLsmg_gotorc(0, 0);
+  SLsmg_refresh();
   return Undefined();
 }
 
@@ -67,7 +69,7 @@ Handle<Value> Update(const Arguments& args) {
 Handle<Value> SetColor(const Arguments& args) {
   HandleScope scope;
 
-  NOBLE_ASSERT_LENGTH(args, 0);
+  NOBLE_ASSERT_LENGTH(args, 2);
   NOBLE_ASSERT_VALUE(args[0], IsString);
   NOBLE_ASSERT_VALUE(args[1], IsString);
 
@@ -105,16 +107,6 @@ Handle<Value> SetAttribute(const Arguments& args) {
   return Undefined();
 }
 
-void MoveCursor(int x, int y) {
-  SLsmg_gotorc(y, x);
-}
-
-void Clear() {
-  SLsmg_cls();
-  SLsmg_gotorc(0, 0);
-  SLsmg_refresh();
-}
-
 void PrintString(const string& message) {
   // const_cast should be okay here, right? Right? Maybe?
   SLsmg_write_string(const_cast<char *>(message.c_str()));
@@ -143,10 +135,13 @@ void PrintException(const string& prefix, const TryCatch& try_catch) {
 }
 
 void PauseAndDisplayMessage(const string& message) {
-  Clear();
+  SLsmg_cls();
+  SLsmg_gotorc(0, 0);
   PrintString(message + "\n\nPress a key...");
+  SLsmg_refresh();
   WaitForKeypress();
-  Clear();
+  SLsmg_cls();
+  SLsmg_refresh();
 }
 
 int WaitForKeypress() {
