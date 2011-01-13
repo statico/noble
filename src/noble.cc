@@ -10,12 +10,13 @@
 #include "console.h"
 #include "fs.h"
 #include "global.h"
+#include "system.h"
 
 using namespace std;
 using namespace v8;
 using namespace noble;
 
-void InitGlobal() {
+void InitGlobal(int argc, char** argv, char** envp) {
   HandleScope scope;
   Local<Object> global = Context::GetCurrent()->Global();
 
@@ -30,9 +31,13 @@ void InitGlobal() {
   Local<Object> console = Object::New();
   console::Initialize(console);
   global->Set(String::NewSymbol("console"), console);
+
+  // noble:: prefix is required here.
+  Handle<Value> system = noble::system::Initialize(argc, argv, envp);
+  global->Set(String::NewSymbol("system"), system);
 }
 
-int main(int argc, char* argv[]) {
+int main(int argc, char** argv, char** envp) {
   if (argc != 2) {
     printf("Usage: %s <noble.js>\n", argv[0]);
     return 1;
@@ -49,7 +54,7 @@ int main(int argc, char* argv[]) {
   Context::Scope context_scope(context);
 
   // Populate the global context.
-  InitGlobal();
+  InitGlobal(argc, argv, envp);
 
   // Load noble.js
   Handle<String> source = fs::ReadFileIntoString(filename);

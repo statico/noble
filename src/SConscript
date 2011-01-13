@@ -16,5 +16,6 @@ env.Program(target='noble', source=[
         'console.cc',
         'fs.cc',
         'global.cc',
+        'system.cc',
         'noble.cc',
         ])
