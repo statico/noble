@@ -15,7 +15,7 @@ using namespace std;
 
 Handle<Value> Read(const Arguments& args);
 Handle<String> ReadFileIntoString(const string& name);
-void Initialize(Handle<Object> target);
+Handle<Value> Initialize();
 
 } } // namespace noble::fs
 

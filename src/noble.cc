@@ -23,13 +23,11 @@ void InitGlobal(int argc, char** argv, char** envp) {
   // Create and initialize globals.
   global::Initialize(global);
 
-  Local<Object> fs = Object::New();
-  fs::Initialize(fs);
+  Handle<Value> fs = fs::Initialize();
   global->Set(String::NewSymbol("fs"), fs);
 
   // Assume that we're using a console UI for now.
-  Local<Object> console = Object::New();
-  console::Initialize(console);
+  Handle<Value> console = console::Initialize();
   global->Set(String::NewSymbol("console"), console);
 
   // noble:: prefix is required here.

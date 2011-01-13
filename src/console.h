@@ -22,7 +22,7 @@ void PauseAndDisplayMessage(const string& message);
 int WaitForKeypress();
 void MainLoop();
 void Finish();
-void Initialize(Handle<Object> target);
+Handle<Value> Initialize();
 
 } } // namespace noble::console
 

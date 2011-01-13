@@ -39,10 +39,10 @@ Handle<String> ReadFileIntoString(const string& name) {
   return result;
 }
 
-void Initialize(Handle<Object> target) {
-  HandleScope scope;
-
-  NOBLE_SET_METHOD(target, "read", fs::Read);
+Handle<Value> Initialize() {
+  Handle<Object> obj = Object::New();
+  NOBLE_SET_METHOD(obj, "read", Read);
+  return obj;
 }
 
 } } // namespace noble::fs

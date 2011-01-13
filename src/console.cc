@@ -185,16 +185,7 @@ void Finish() {
   SLang_reset_tty();
 }
 
-void Initialize(Handle<Object> target) {
-  HandleScope scope;
-
-  NOBLE_SET_METHOD(target, "log", console::Log);
-  NOBLE_SET_METHOD(target, "moveCursor", console::MoveCursor);
-  NOBLE_SET_METHOD(target, "clear", console::Clear);
-  NOBLE_SET_METHOD(target, "update", console::Update);
-  NOBLE_SET_METHOD(target, "setColor", console::SetColor);
-  NOBLE_SET_METHOD(target, "setAttribute", console::SetAttribute);
-
+Handle<Value> Initialize() {
   SLtt_get_terminfo();
   SLang_init_tty(-1, 1, 0); // Don't change interrupt key, pass us ^Q/^S.
   SLsmg_init_smg();
@@ -202,6 +193,15 @@ void Initialize(Handle<Object> target) {
   SLtt_set_color(0, NULL, (char *) "white", (char *) "default"); // Nicer defaults.
 
   atexit(Finish);
+
+  Handle<Object> obj = Object::New();
+  NOBLE_SET_METHOD(obj, "log", Log);
+  NOBLE_SET_METHOD(obj, "moveCursor", MoveCursor);
+  NOBLE_SET_METHOD(obj, "clear", Clear);
+  NOBLE_SET_METHOD(obj, "update", Update);
+  NOBLE_SET_METHOD(obj, "setColor", SetColor);
+  NOBLE_SET_METHOD(obj, "setAttribute", SetAttribute);
+  return obj;
 }
 
 } } // namespace noble::console
