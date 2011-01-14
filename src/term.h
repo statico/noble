@@ -1,19 +1,19 @@
 // Copyright 2011 the Noble project authors. All rights reserved.
 
-#ifndef NOBLE_CONSOLE_H_
-#define NOBLE_CONSOLE_H_
+#ifndef NOBLE_TERM_H_
+#define NOBLE_TERM_H_
 
 #include <string>
 
 #include "noble.h"
 
 namespace noble {
-namespace console {
+namespace term {
 
 using namespace std;
 using namespace v8;
 
-Handle<Value> Log(const Arguments& args);
+Handle<Value> PutString(const Arguments& args);
 Handle<Value> MoveCursor(const Arguments& args);
 Handle<Value> Clear(const Arguments& args);
 Handle<Value> Update(const Arguments& args);
@@ -30,6 +30,6 @@ void Finish();
 
 Handle<Value> Initialize();
 
-} } // namespace noble::console
+} } // namespace noble::term
 
-#endif // NOBLE_CONSOLE_H_
+#endif // NOBLE_TERM_H_

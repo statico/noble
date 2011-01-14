@@ -1,7 +1,10 @@
-// Exported variables: exit, console, system, fs
+// Exported variables: exit, console, system, fs, term
 // TODO: console should be different from term
 
 console.clear();
+try {
+  console.setAttribute('blink');
+} catch(e) { console.log(e) }
 console.setColor('green', 'blue');
 console.log(" - I'm feeling noble! - ");
 console.setColor('default', 'default');

@@ -7,7 +7,7 @@
 #include <v8.h>
 
 #include "noble.h"
-#include "console.h"
+#include "term.h"
 #include "fs.h"
 #include "global.h"
 #include "system.h"
@@ -27,8 +27,8 @@ void InitGlobal(int argc, char** argv, char** envp) {
   global->Set(String::NewSymbol("fs"), fs);
 
   // Assume that we're using a console UI for now.
-  Handle<Value> console = console::Initialize();
-  global->Set(String::NewSymbol("console"), console);
+  Handle<Value> term = term::Initialize();
+  global->Set(String::NewSymbol("term"), term);
 
   // noble:: prefix is required here.
   Handle<Value> system = noble::system::Initialize(argc, argv, envp);
@@ -57,14 +57,14 @@ int main(int argc, char** argv, char** envp) {
   // Load noble.js
   Handle<String> source = fs::ReadFileIntoString(filename);
   if (source.IsEmpty()) {
-    console::PauseAndDisplayMessage("Couldn't read file " + filename);
+    term::PauseAndDisplayMessage("Couldn't read file " + filename);
     return 1;
   }
 
   // Compile
   Handle<Script> script = Script::Compile(source, String::NewSymbol(filename.c_str()));
   if (script.IsEmpty()) {
-    console::PrintException("Couldn't compile init script", try_catch);
+    term::PrintException("Couldn't compile init script", try_catch);
     return 1;
   }
 
@@ -72,11 +72,11 @@ int main(int argc, char** argv, char** envp) {
   try_catch.Reset();
   script->Run();
   if (try_catch.HasCaught()) {
-    console::PrintException("Couldn't run init script", try_catch);
+    term::PrintException("Couldn't run init script", try_catch);
   }
 
   // Loop
-  console::MainLoop();
+  term::MainLoop();
 
   return 0;
 }

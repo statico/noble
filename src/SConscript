@@ -13,9 +13,9 @@ if env['PLATFORM'] == 'darwin':
     env.Append(CCFLAGS = '-fvisibility=hidden -m64')
 
 env.Program(target='noble', source=[
-        'console.cc',
         'fs.cc',
         'global.cc',
         'system.cc',
+        'term.cc',
         'noble.cc',
         ])

@@ -2,31 +2,25 @@
 
 #include <stdio.h>
 
-#include "console.h"
+#include "term.h"
 
 // Needs to be after any v8 headers.
 #include "slang.h"
 
 namespace noble {
-namespace console {
+namespace term {
 
 using namespace v8;
 using namespace std;
 
-Handle<Value> Log(const Arguments& args) {
+Handle<Value> PutString(const Arguments& args) {
   HandleScope scope;
 
-  int count = args.Length();
-  for (int i = 0; i < count; i++) {
-    Handle<Value> arg = args[i]->ToString();
-    String::Utf8Value value(arg);
-    PrintString(string(*value));
-    if (i == count - 1) {
-      PrintString("\n");
-    } else {
-      PrintString(" ");
-    }
-  }
+  NOBLE_ASSERT_LENGTH(args, 1);
+
+  Handle<Value> arg = args[0]->ToString();
+  String::Utf8Value value(arg);
+  PrintString(string(*value));
 
   return Undefined();
 }
@@ -190,7 +184,7 @@ Handle<Value> Initialize() {
   atexit(Finish);
 
   Handle<Object> obj = Object::New();
-  NOBLE_SET_METHOD(obj, "log", Log);
+  NOBLE_SET_METHOD(obj, "puts", PutString);
   NOBLE_SET_METHOD(obj, "moveCursor", MoveCursor);
   NOBLE_SET_METHOD(obj, "clear", Clear);
   NOBLE_SET_METHOD(obj, "update", Update);
@@ -199,4 +193,4 @@ Handle<Value> Initialize() {
   return obj;
 }
 
-} } // namespace noble::console
+} } // namespace noble::term
