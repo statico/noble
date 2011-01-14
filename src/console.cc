@@ -85,7 +85,7 @@ Handle<Value> SetAttribute(const Arguments& args) {
 
   // We could do something smarter here such as allowing multiple
   // attribute arguments.
-  NOBLE_ASSERT_LENGTH(args, 0);
+  NOBLE_ASSERT_LENGTH(args, 1);
   NOBLE_ASSERT_VALUE(args[0], IsString);
 
   String::Utf8Value value(args[0]);
