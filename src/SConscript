@@ -6,7 +6,7 @@ Import('env')
 env.ParseConfig('pkg-config --cflags --libs slang')
 
 # v8
-env.Prepend(CCFLAGS = '-g -Wall')
+env.Prepend(CCFLAGS = '-g -Wall -Werror -pedantic')
 env.Append(CPPPATH = Dir('../deps/v8/src'))
 env.Append(LIBS = File('../deps/v8/libv8.a'))
 if env['PLATFORM'] == 'darwin':
