@@ -22,6 +22,8 @@
   if (!value->method())                          \
     NOBLE_THROW(TypeError, "Bad argument");
 
+// Other handy macros stolen from Node.
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
 
 // A macro to disallow the copy constructor and operator= functions
 // This should be used in the private: declarations for a class. (From

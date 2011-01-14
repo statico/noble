@@ -2,6 +2,10 @@
 
 #include <stdio.h>
 
+#include <map>
+#include <iostream>
+#include <sstream>
+
 #include "term.h"
 
 // Needs to be after any v8 headers.
@@ -12,6 +16,14 @@ namespace term {
 
 using namespace v8;
 using namespace std;
+
+// Apparently terminals support 'color pairs', and ncurses and SLang
+// want you to create a color pair before printing text in a given
+// color combination. Like mutt, I want to support arbitrary fg/bg
+// colors, so the way to do this is allocate new pairs and save them
+// as we go.
+typedef pair<string, string> color_tuple;
+static map<color_tuple, int> color_map;
 
 Handle<Value> PutString(const Arguments& args) {
   HandleScope scope;
@@ -67,9 +79,28 @@ Handle<Value> SetColor(const Arguments& args) {
   NOBLE_ASSERT_VALUE(args[0], IsString);
   NOBLE_ASSERT_VALUE(args[1], IsString);
 
-  String::Utf8Value fg(args[0]);
-  String::Utf8Value bg(args[1]);
-  SLtt_set_color(0, NULL, *fg, *bg);
+  // Normally, this is where we should check color_map.size() being
+  // greater than COLOR_PAIRS, but including slcurses.h (part of
+  // SLang) does all sorts of weird stuff. Instead, hope and pray.
+
+  String::Utf8Value first(args[0]);
+  String::Utf8Value second(args[1]);
+
+  string fg(*first);
+  string bg(*second);
+  color_tuple tuple(fg, bg);
+
+  int cid;
+  map<color_tuple, int>::const_iterator it = color_map.find(tuple);
+  if (it != color_map.end()) {
+    cid = it->second;
+  } else {
+    cid = color_map.size() + 2; // Colors 0 and 1 are reserved.
+    color_map.insert(pair<color_tuple, int>(tuple, cid));
+  }
+
+  SLtt_set_color(cid, NULL, *first, *second);
+  SLsmg_set_color(cid);
 
   return Undefined();
 }
@@ -180,10 +211,12 @@ Handle<Value> Initialize() {
   SLsmg_init_smg();
   SLsmg_Newline_Behavior = SLSMG_NEWLINE_MOVES;
   SLtt_set_color(0, NULL, (char *) "white", (char *) "default"); // Nicer defaults.
+  SLsmg_refresh();
 
   atexit(Finish);
 
   Handle<Object> obj = Object::New();
+  // TODO: rows, cols, widthOfUtf8Char
   NOBLE_SET_METHOD(obj, "puts", PutString);
   NOBLE_SET_METHOD(obj, "moveCursor", MoveCursor);
   NOBLE_SET_METHOD(obj, "clear", Clear);

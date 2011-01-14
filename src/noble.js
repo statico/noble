@@ -1,16 +1,24 @@
-// Exported variables: exit, console, system, fs, term
-// TODO: console should be different from term
+// Exported variables: exit, system, fs, term
 
-console.clear();
+var console = {};
+
+var log = console.log = function() {
+  for (var i = 0; i < arguments.length; i++) {
+    term.puts(arguments[i] + ' ');
+  }
+  term.puts('\n');
+};
+
+term.clear();
 try {
-  console.setAttribute('blink');
-} catch(e) { console.log(e) }
-console.setColor('green', 'blue');
-console.log(" - I'm feeling noble! - ");
-console.setColor('default', 'default');
-console.log('args:', system.args);
-console.log('HOME =', system.env.HOME);
-console.log('eval:', eval('1 + 2'));
+  term.setAttribute('blink');
+} catch(e) { term.log(e) }
+term.setColor('green', 'blue');
+log(" - I'm feeling noble! - ");
+term.setColor('default', 'default');
+log('args:', system.args);
+log('HOME =', system.env.HOME);
+log('eval:', eval('1 + 2'));
 
 var modules = {};
 
@@ -35,16 +43,16 @@ function require(name) {
 function onKeypress(char) {
   switch (char) {
   case 'c'.charCodeAt():
-    console.clear()
+    term.clear()
     break;
   case 'q'.charCodeAt():
     exit()
     break;
   case 'r'.charCodeAt():
     require('noble');
-    console.log('reloaded!');
+    log('reloaded!');
     break;
   default:
-    console.log("Keypress: " + char);
+    log("Keypress: " + char);
   }
 }
