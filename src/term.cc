@@ -132,6 +132,18 @@ Handle<Value> SetAttribute(const Arguments& args) {
   return Undefined();
 }
 
+Handle<Value> GetWidth(const Arguments& args) {
+  HandleScope scope;
+  NOBLE_ASSERT_LENGTH(args, 0);
+  return Integer::New(SLtt_Screen_Cols);
+}
+
+Handle<Value> GetHeight(const Arguments& args) {
+  HandleScope scope;
+  NOBLE_ASSERT_LENGTH(args, 0);
+  return Integer::New(SLtt_Screen_Rows);
+}
+
 void PrintString(const string& message) {
   // const_cast should be okay here, right? Right? Maybe?
   SLsmg_write_string(const_cast<char *>(message.c_str()));
@@ -216,13 +228,18 @@ Handle<Value> Initialize() {
   atexit(Finish);
 
   Handle<Object> obj = Object::New();
-  // TODO: rows, cols, widthOfUtf8Char
+  // I've decided to go with a width-height/x-y metaphor instead of
+  // rows-cols/y-x. We're working with pixels, not a spreadsheet.
+  //
+  // TODO: widthOfUtf8Char
   NOBLE_SET_METHOD(obj, "puts", PutString);
   NOBLE_SET_METHOD(obj, "moveCursor", MoveCursor);
   NOBLE_SET_METHOD(obj, "clear", Clear);
   NOBLE_SET_METHOD(obj, "update", Update);
   NOBLE_SET_METHOD(obj, "setColor", SetColor);
   NOBLE_SET_METHOD(obj, "setAttribute", SetAttribute);
+  NOBLE_SET_METHOD(obj, "width", GetWidth);
+  NOBLE_SET_METHOD(obj, "height", GetHeight);
   return obj;
 }
 

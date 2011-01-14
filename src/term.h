@@ -19,6 +19,8 @@ Handle<Value> Clear(const Arguments& args);
 Handle<Value> Update(const Arguments& args);
 Handle<Value> SetColor(const Arguments& args);
 Handle<Value> SetAttribute(const Arguments& args);
+Handle<Value> GetWidth(const Arguments& args);
+Handle<Value> GetHeight(const Arguments& args);
 
 void PrintString(const string& message);
 void PrintLine(const string& message);

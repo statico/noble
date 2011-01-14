@@ -19,6 +19,7 @@ term.setColor('default', 'default');
 log('args:', system.args);
 log('HOME =', system.env.HOME);
 log('eval:', eval('1 + 2'));
+log('term is', term.width(), 'x', term.height());
 
 var modules = {};
 
