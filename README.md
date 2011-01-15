@@ -61,7 +61,7 @@ Build the v8 library:
 
     $ python tools/scons-local/scons.py
 
-(Note: I needed the extra `arch=x64` parameter on Mac OS X 10.6 with MacPorts.)
+(Note: I needed the extra `arch=x64` parameter on Mac OS X 10.6 with Mac Ports.)
 
 Then build the noble executable into `src/noble`:
 
