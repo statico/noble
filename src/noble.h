@@ -7,7 +7,7 @@
 
 // A convenience macro stolen from Node.
 #define NOBLE_SET_METHOD(obj, name, callback) \
-  obj->Set(String::NewSymbol(name),          \
+  obj->Set(String::NewSymbol(name), \
            FunctionTemplate::New(callback)->GetFunction())
 
 // Reusable snippets.
@@ -19,8 +19,11 @@
     NOBLE_THROW(Error, "Incorrect number of arguments");
 
 #define NOBLE_ASSERT_VALUE(value, method) \
-  if (!value->method())                          \
+  if (!value->method()) \
     NOBLE_THROW(TypeError, "Bad argument");
+
+#define NOBLE_CSTR(value) \
+  const_cast<char *>(  (string( *(String::Utf8Value(value)) )).c_str()  )
 
 // Other handy macros stolen from Node.
 #define MIN(a, b) ((a) < (b) ? (a) : (b))

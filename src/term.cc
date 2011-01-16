@@ -1,6 +1,6 @@
 // Copyright 2011 the Noble project authors. All rights reserved.
 
-#include <stdio.h>
+#include <string.h>
 
 #include <map>
 #include <iostream>
@@ -25,15 +25,43 @@ using namespace std;
 typedef pair<string, string> color_tuple;
 static map<color_tuple, int> color_map;
 
-Handle<Value> PutString(const Arguments& args) {
+Handle<Value> PutCharacter(const Arguments& args) {
   HandleScope scope;
 
   NOBLE_ASSERT_LENGTH(args, 1);
+  NOBLE_ASSERT_VALUE(args[0], IsString);
 
-  Handle<Value> arg = args[0]->ToString();
-  String::Utf8Value value(arg);
-  PrintString(string(*value));
+  Handle<String> arg = args[0]->ToString();
+  if (arg->Length() < 1) return Undefined(); // Fail silently.
 
+  SLsmg_write_nchars(NOBLE_CSTR(arg), 1); // UTF-8 aware.
+
+  return Undefined();
+}
+
+// How many columns wide is the given UTF-8-encoded character?
+Handle<Value> CharacterWidth(const Arguments& args) {
+  HandleScope scope;
+
+  NOBLE_ASSERT_LENGTH(args, 1);
+  NOBLE_ASSERT_VALUE(args[0], IsString);
+
+  Handle<String> arg = args[0]->ToString();
+  int len = arg->Length();
+
+  if (len == 0) {
+    return Integer::New(0);
+  } else if (len == 1) {
+    // Sigh. Nothing is easy.
+    char* str = NOBLE_CSTR(arg);
+    unsigned char* ustr = reinterpret_cast<unsigned char*>(NOBLE_CSTR(arg));
+    SLwchar_Type wc;
+    if (NULL == SLutf8_decode(ustr, ustr + strlen(str), &wc, NULL)) {
+      return Integer::New(0);
+    } else {
+      return Integer::New(SLwchar_wcwidth(wc));
+    }
+  }
   return Undefined();
 }
 
@@ -144,6 +172,18 @@ Handle<Value> GetHeight(const Arguments& args) {
   return Integer::New(SLtt_Screen_Rows);
 }
 
+Handle<Value> GetCursorRow(const Arguments& args) {
+  HandleScope scope;
+  NOBLE_ASSERT_LENGTH(args, 0);
+  return Integer::New(SLsmg_get_row());
+}
+
+Handle<Value> GetCursorColumn(const Arguments& args) {
+  HandleScope scope;
+  NOBLE_ASSERT_LENGTH(args, 0);
+  return Integer::New(SLsmg_get_column());
+}
+
 void PrintString(const string& message) {
   // const_cast should be okay here, right? Right? Maybe?
   SLsmg_write_string(const_cast<char *>(message.c_str()));
@@ -218,10 +258,14 @@ void Finish() {
 }
 
 Handle<Value> Initialize() {
+  // SLang initialization. I learned a lot here from the S-Lang
+  // Library C Programmer's Guide and the mutt mail client.
   SLtt_get_terminfo();
   SLang_init_tty(-1, 1, 0); // Don't change interrupt key, pass us ^Q/^S.
   SLsmg_init_smg();
   SLsmg_Newline_Behavior = SLSMG_NEWLINE_MOVES;
+  SLutf8_enable(-1);
+  //SLsmg_Display_Eight_Bit = 128; // Make UTF-8 printable.
   SLtt_set_color(0, NULL, (char *) "white", (char *) "default"); // Nicer defaults.
   SLsmg_refresh();
 
@@ -232,7 +276,8 @@ Handle<Value> Initialize() {
   // rows-cols/y-x. We're working with pixels, not a spreadsheet.
   //
   // TODO: widthOfUtf8Char
-  NOBLE_SET_METHOD(obj, "puts", PutString);
+  NOBLE_SET_METHOD(obj, "putCharacter", PutCharacter);
+  NOBLE_SET_METHOD(obj, "characterWidth", CharacterWidth);
   NOBLE_SET_METHOD(obj, "moveCursor", MoveCursor);
   NOBLE_SET_METHOD(obj, "clear", Clear);
   NOBLE_SET_METHOD(obj, "update", Update);
@@ -240,6 +285,8 @@ Handle<Value> Initialize() {
   NOBLE_SET_METHOD(obj, "setAttribute", SetAttribute);
   NOBLE_SET_METHOD(obj, "width", GetWidth);
   NOBLE_SET_METHOD(obj, "height", GetHeight);
+  NOBLE_SET_METHOD(obj, "x", GetCursorColumn);
+  NOBLE_SET_METHOD(obj, "y", GetCursorRow);
   return obj;
 }
 
