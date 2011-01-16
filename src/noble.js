@@ -2,7 +2,7 @@
 
 var console = {};
 
-var log = console.log = function() {
+var log = console.log = function console_log() {
   var x = term.x(), y = term.y();
   var w = term.width(), h = term.height();
 
@@ -11,6 +11,7 @@ var log = console.log = function() {
   function put_char(char) {
     var cw = term.characterWidth(char);
     if (cw == 0) return;
+    term.moveCursor(x, y);
 
     function start_new_line() {
       x = 0;
@@ -20,22 +21,22 @@ var log = console.log = function() {
     if (char == '\n') {
       start_new_line();
     } else {
+      term.moveCursor(x, y);
       var gap = w - x;
       if (cw <= gap) {
         x++;
       } else {
         start_new_line();
       }
-      term.moveCursor(x, y);
     }
 
     // Draw the character. If it's wide it'll need to be padded with
     // spaces to the right of it.
     term.putCharacter(char);
-    if (width > 1) {
-      for (var i = 1; i < width; i++) {
-        term.moveCursor(++x, y);
+    if (cw > 1) {
+      for (var i = 1; i < cw; i++) {
         term.putCharacter(' ');
+        x++;
       }
     }
   }
@@ -44,9 +45,9 @@ var log = console.log = function() {
   for (var i = 0; i < arguments.length; i++) {
     var arg = arguments[i].toString();
     for (var j = 0; j < arg.length; j++) {
-      term.putCharacter(arg[j]);
+      put_char(arg[j]);
     }
-    term.putCharacter(i == arguments.length - 1 ? '\n' : ' ');
+    put_char(i == arguments.length - 1 ? '\n' : ' ');
   }
 
   term.update();
@@ -64,6 +65,7 @@ log('HOME =', system.env.HOME);
 log('eval:', eval('1 + 2'));
 log('term is', term.width(), 'x', term.height());
 log('narrow char - [¢] - wide char - [▣]');
+log('a黑z');
 
 var modules = {};
 
