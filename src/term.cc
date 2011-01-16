@@ -273,7 +273,7 @@ Handle<Value> Initialize() {
   // I've decided to go with a width-height/x-y metaphor instead of
   // rows-cols/y-x. We're working with pixels, not a spreadsheet.
   //
-  // TODO: widthOfUtf8Char
+  // TODO: suspend, resume
   NOBLE_SET_METHOD(obj, "putCharacter", PutCharacter);
   NOBLE_SET_METHOD(obj, "characterWidth", CharacterWidth);
   NOBLE_SET_METHOD(obj, "moveCursor", MoveCursor);
