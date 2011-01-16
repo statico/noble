@@ -3,40 +3,22 @@
 var console = {};
 
 var log = console.log = function console_log() {
-  var x = term.x(), y = term.y();
-  var w = term.width(), h = term.height();
-
   // Draws a character to the string, wrapping to the next line if
   // necessary.
   function put_char(char) {
     var cw = term.characterWidth(char);
     if (cw == 0) return;
-    term.moveCursor(x, y);
 
-    function start_new_line() {
-      x = 0;
-      y = Math.min(h - 1, y + 1);
-    }
+    var gap = term.width() - term.x();
+    if (cw > gap) term.putCharacter('\n');
 
-    if (char == '\n') {
-      start_new_line();
-    } else {
-      term.moveCursor(x, y);
-      var gap = w - x;
-      if (cw <= gap) {
-        x++;
-      } else {
-        start_new_line();
-      }
-    }
-
-    // Draw the character. If it's wide it'll need to be padded with
+    // Draw the character. If it's a newline, SLang does the right
+    // thing automatically. If it's wide it'll need to be padded with
     // spaces to the right of it.
     term.putCharacter(char);
     if (cw > 1) {
       for (var i = 1; i < cw; i++) {
         term.putCharacter(' ');
-        x++;
       }
     }
   }
