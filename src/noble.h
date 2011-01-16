@@ -3,6 +3,11 @@
 #ifndef NOBLE_H_
 #define NOBLE_H_
 
+#ifdef DEBUG
+#include <iostream>
+#include <fstream>
+#endif // DEBUG
+
 #include <v8.h>
 
 // A convenience macro stolen from Node.
@@ -33,5 +38,11 @@
 #define DISALLOW_COPY_AND_ASSIGN(TypeName) \
   TypeName(const TypeName&);               \
   void operator=(const TypeName&)
+
+#ifdef DEBUG
+#define OPEN_LOG std::ofstream logger__("noble.log", std::fstream::app);
+#define X logger__
+#define CLOSE_LOG logger__.close();
+#endif // DEBUG
 
 #endif // NOBLE_H_

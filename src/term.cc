@@ -3,8 +3,6 @@
 #include <string.h>
 
 #include <map>
-#include <iostream>
-#include <sstream>
 
 #include "term.h"
 
