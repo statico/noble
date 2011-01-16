@@ -22,8 +22,7 @@
   if (!value->method()) \
     NOBLE_THROW(TypeError, "Bad argument");
 
-#define NOBLE_CSTR(value) \
-  const_cast<char *>(  (string( *(String::Utf8Value(value)) )).c_str()  )
+#define NOBLE_CSTR(value) (*(String::Utf8Value(value)))
 
 // Other handy macros stolen from Node.
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
