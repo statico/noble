@@ -32,7 +32,8 @@ Handle<Value> PutCharacter(const Arguments& args) {
   Handle<String> arg = args[0]->ToString();
   if (arg->Length() < 1) return Undefined(); // Fail silently.
 
-  SLsmg_write_nchars(NOBLE_CSTR(arg), 1); // UTF-8 aware.
+  char* str = NOBLE_CSTR(arg);
+  SLsmg_write_nchars(str, strlen(str));
 
   return Undefined();
 }
@@ -258,12 +259,14 @@ void Finish() {
 Handle<Value> Initialize() {
   // SLang initialization. I learned a lot here from the S-Lang
   // Library C Programmer's Guide and the mutt mail client.
+  //
+  // TODO: Don't force UTF8.
   SLtt_get_terminfo();
   SLang_init_tty(-1, 1, 0); // Don't change interrupt key, pass us ^Q/^S.
   SLsmg_init_smg();
   SLsmg_Newline_Behavior = SLSMG_NEWLINE_MOVES;
-  SLutf8_enable(-1);
-  //SLsmg_Display_Eight_Bit = 128; // Make UTF-8 printable.
+  SLsmg_utf8_enable(1);
+  SLtt_utf8_enable(1);
   SLtt_set_color(0, NULL, (char *) "white", (char *) "default"); // Nicer defaults.
   SLsmg_refresh();
 
