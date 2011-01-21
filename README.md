@@ -48,7 +48,7 @@ I want Noble to be the text editor of the future. I want:
    * Search and replaces
    * VCS integration
    * As much as possible from
-     [Code Bubbles](http://WWW.cs.brown.edu/people/acb/codebubbles_site.HM)
+     [Code Bubbles](http://www.cs.brown.edu/people/acb/codebubbles_site.htm)
    * Anything else to improve...
      * Latex build/refresh cycle
      * Django refresh cycle
